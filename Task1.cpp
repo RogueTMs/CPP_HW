@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "googletest/googlemock/include/gmock/gmock.h"
-#include "googletest/googletest/include/gtest/gtest.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 using namespace std;
 
@@ -12,71 +12,89 @@ struct Node {
     Node(int k) : key(k), priority(rand()), left(nullptr), right(nullptr) {}
 };
 
-void split(Node *root, int key, Node *&left, Node *&right) {
-    if (!root) {
-        left = right = nullptr;
-    } else if (key < root->key) {
-        split(root->left, key, left, root->left);
-        right = root;
-    } else {
-        split(root->right, key, root->right, right);
-        left = root;
-    }
+class Treap {
+    public:
+
+        Node *root;
+
+        Treap(Node *r) : root(r) {}
+    
+
+        void split(Node *node, int key, Node *&left, Node *&right) {
+            if (!node) {
+                left = right = nullptr;
+            } else if (key > node->key) {
+                Node *RL, *RR; 
+
+                split(root->right, key, RL, RR);
+                node->right = RL;
+            } else {
+                Node *LL, *LR; 
+
+                split(root->left, key, LL, LR);
+                node->left = LR;
+            }
+        }
+
+        void merge(Node *&node, Node *T1, Node *T2) {
+            if (!T1 || !T2) {
+                node = T1 ? T1 : T2;
+            } else if (T1->priority > T2->priority) {
+                merge(T1->right, T1->right, T2);
+                node = T2;
+            } else {
+                merge(T1->left, T1, T1->left);
+                node = T1;
+            }
+        }
+
+        void insert(Node *&node, Node *newNode) {
+
+            Node *T1 = nullptr, *T2 = nullptr;
+            split(node, newNode->key, T1, T2);
+            merge(T1, T1, newNode);
+            merge(node, T1, T2);
+        }
+
+        void remove(Node *node, int k){
+            Node *T1 = nullptr, *T2 = nullptr;
+
+            split(node, k, T1, T2);
+            if (T2->key == k){
+                merge(T2, T2->left, T2->right);
+            }
+
+            merge(node, T1, T2);
+        }
+};
+
+
+TEST(Init_test, sub_1){
+    Node root = 10;
+
+    ASSERT_EQ(root.key, 10);
 }
 
-void merge(Node *&root, Node *left, Node *right) {
-    if (!left || !right) {
-        root = left ? left : right;
-    } else if (left->priority > right->priority) {
-        merge(left->right, left->right, right);
-        root = left;
-    } else {
-        merge(right->left, left, right->left);
-        root = right;
-    }
+TEST(Init_test, sub_2){
+    Node root = 10, left = 5, right = 15;
+    Node *rp = &root;
+
+    Treap treap = rp;
+
+    treap.insert(rp, &left);
+    treap.insert(rp, &right);
+
+    ASSERT_EQ(treap.root->key, 10);
+    ASSERT_EQ(treap.root->left->key, 5);
+    // ASSERT_EQ(treap.root->right->key, 15);
 }
 
-void insert(Node *&root, Node *newNode) {
-    if (!root) {
-        root = newNode;
-    } else if (newNode->priority > root->priority) {
-        split(root, newNode->key, newNode->left, newNode->right);
-        root = newNode;
-    } else {
-        insert(newNode->key < root->key ? root->left : root->right, newNode);
-    }
-}
-
-void erase(Node *&root, int key) {
-    if (!root) return;
-    if (root->key == key) {
-        Node *temp = root;
-        merge(root, root->left, root->right);
-        delete temp;
-    } else {
-        erase(key < root->key ? root->left : root->right, key);
-    }
-}
-
-void inorder(Node *root) {
-    if (!root) return;
-    inorder(root->left);
-    cout << root->key << " ";
-    inorder(root->right);
-}
-
-// Define tests for the Node struct
-TEST(NodeTest, Constructor) {
-  Node node(5);
-  EXPECT_EQ(5, node.key);
-  EXPECT_EQ(0, node.priority); // Assuming priority is initialized to 0
-  EXPECT_EQ(nullptr, node.left);
-  EXPECT_EQ(nullptr, node.right);
-}
-
-// Add more tests for other functions or behaviors of the Node struct
 
 int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleMock(&argc, argv);
+
+    cout << "Hello!\n";
+    
+    return RUN_ALL_TESTS();
 }
