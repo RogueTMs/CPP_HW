@@ -1,6 +1,58 @@
 #include "AVLTree.h"
 #include <algorithm>
 
+
+template <typename T> AVLTree<T> &AVLTree<T>::operator=(const AVLTree &other) {
+    if (other.root != NULL && this != &other) {
+        this->clear();
+        std::vector<AVLNode<T> *> stack;
+
+        stack.push_back(other.root);
+        if (root != nullptr)
+            stack.push_back(root);
+
+        while (!stack.empty()) {
+            AVLNode<T> *node = stack.back();
+            stack.pop_back();
+
+            if (node->left != nullptr)
+                stack.push_back(node->left);
+
+            if (node->right != nullptr)
+                stack.push_back(node->right);
+
+            this->insert(node->value);
+        }
+    }
+
+    return *this;
+}
+
+template <typename T> AVLTree<T>::AVLTree(const AVLTree<T> &other) {
+    if (other.root != NULL && this != &other) {
+        root = new AVLNode<T>(other.root->value);
+        std::vector<AVLNode<T> *> stack;
+        this->clear();
+
+        stack.push_back(other.root);
+        if (root != nullptr)
+            stack.push_back(root);
+
+        while (!stack.empty()) {
+            AVLNode<T> *node = stack.back();
+            stack.pop_back();
+
+            if (node->left != nullptr)
+                stack.push_back(node->left);
+
+            if (node->right != nullptr)
+                stack.push_back(node->right);
+
+            this->insert(node->value);
+        }
+    }
+}
+
 template <typename T> AVLNode<T> *AVLTree<T>::find(T value) {
     AVLNode<T> *node = findImpl(root, value);
     return node;
@@ -149,7 +201,7 @@ template <typename T> AVLNode<T> *AVLTree<T>::balanceTree(AVLNode<T> *node) {
             return left_rotation(node);
         }
     } else if (balance < -1) {
-        if (getBalance(node->left) > -1) {
+        if (getBalance(node->left) < 1) {
             return right_rotation(node);
         } else {
             node->left = left_rotation(node->left);
