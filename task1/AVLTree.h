@@ -21,9 +21,12 @@ template <typename T> class AVLTree {
     AVLNode<T> *root;
 
     AVLTree() { root = NULL; }
+
     ~AVLTree() { clear(); };
     AVLTree(const AVLTree &other);
-    AVLTree &operator=(const AVLTree &other);
+    AVLTree(AVLTree &&other);
+    AVLTree &operator=(AVLTree other);
+
 
     void insert(T value) { root = insertImpl(root, value); }
     void remove(T value) { root = removeImpl(root, value); }
@@ -44,5 +47,6 @@ template <typename T> class AVLTree {
     AVLNode<T> *right_rotation(AVLNode<T> *node);
     AVLNode<T> *balanceTree(AVLNode<T> *node);
 
+    void swapData(AVLTree<T> &other, AVLNode<T> *root=nullptr);
     void clear();
 };

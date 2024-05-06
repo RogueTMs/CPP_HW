@@ -7,13 +7,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCES
-    AVLTree.cpp
+    framework.cpp
     main.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(task1 ${SOURCES})
+add_executable(task2 ${SOURCES})
 
 include(FetchContent)
 
@@ -34,9 +34,9 @@ FetchContent_MakeAvailable(googletest)
 
 find_package(GTest)
 
-gtest_discover_tests(task1)
+gtest_discover_tests(task2)
 
-target_link_libraries(task1 gtest_main gmock_main)
+target_link_libraries(task2 gtest_main gmock_main)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")

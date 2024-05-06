@@ -6,7 +6,6 @@ struct Point {
     double x;
     double y;
 
-    // Default constructor
     Point() : x(0.0), y(0.0) {}
     
     Point(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
@@ -46,8 +45,7 @@ struct Line {
         double det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         
         if (det == 0) {
-            std::cerr << "Lines are parallel, no intersection point!" << std::endl;
-            return Point(0, 0);
+            throw std::runtime_error("Lines are parallel, no intersection point!");
         }
         
         double intersectionX = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / det;
@@ -58,29 +56,10 @@ struct Line {
     
     // Function to find the perpendicular line at a given point
     Line findPerpendicularLine(Point p) {
-        double a = start.y - end.y;
+        double a = end.y - start.y;
         double b = end.x - start.x;
         double c = -a * p.x - b * p.y;
         
         return Line(a, b, c);
     }
 };
-
-int main() {
-    Point p1(1.0, 2.0);
-    Point p2(3.0, 4.0);
-    
-    Line line1(p1, p2);
-    
-    Line line2(2.0, -1.0, 3.0);
-    
-    Point intersection = line1.findIntersection(line2);
-    std::cout << "Intersection point: (" << intersection.x << ", " << intersection.y << ")" << std::endl;
-    
-    Point pointForPerpendicular(5.0, 6.0);
-    Line perpendicularLine = line1.findPerpendicularLine(pointForPerpendicular);
-    std::cout << "Perpendicular line start: (" << perpendicularLine.start.x << ", " << perpendicularLine.start.y << ")" << std::endl;
-    std::cout << "Perpendicular line end: (" << perpendicularLine.end.x << ", " << perpendicularLine.end.y << ")" << std::endl;
-    
-    return 0;
-}

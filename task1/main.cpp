@@ -136,6 +136,20 @@ TEST(AVLTreeTest, CopyAssignment) {
     ASSERT_TRUE(compareTrees(originalTree.root, copiedTree.root));
 }
 
+TEST(AVLTreeTest, MoveConstructor) {
+    AVLTree<int> tree1;
+    tree1.insert(1);
+    tree1.insert(2);
+    tree1.insert(3);
+
+    AVLTree<int> tree2(std::move(tree1));
+
+    ASSERT_EQ(tree2.root->value, 2);
+    ASSERT_EQ(tree2.root->left->value, 1);
+    ASSERT_EQ(tree2.root->right->value, 3);
+    ASSERT_EQ(tree1.root, nullptr);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleMock(&argc, argv);
