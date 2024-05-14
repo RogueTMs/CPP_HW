@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(AVLTree LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+project(ScopedPointer LANGUAGES CXX)
+
 set(SOURCES
-    AVLTree.cpp
+    scopedPointer.cpp
     main.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(task1 ${SOURCES})
+add_executable(task5 ${SOURCES})
 
 include(FetchContent)
 
@@ -34,9 +34,9 @@ FetchContent_MakeAvailable(googletest)
 
 find_package(GTest)
 
-gtest_discover_tests(task1)
+gtest_discover_tests(task5)
 
-target_link_libraries(task1 gtest_main gmock_main)
+target_link_libraries(task5 gtest_main gmock_main)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fno-omit-frame-pointer -fsanitize=address")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -std=c++20 -fno-omit-frame-pointer -fsanitize=address")

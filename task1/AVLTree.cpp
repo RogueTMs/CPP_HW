@@ -35,8 +35,6 @@ template <typename T> AVLTree<T>::AVLTree(const AVLTree<T> &other) {
         this->clear();
 
         stack.push_back(other.root);
-        if (root != nullptr)
-            stack.push_back(root);
 
         while (!stack.empty()) {
             AVLNode<T> *node = stack.back();
@@ -56,27 +54,7 @@ template <typename T> AVLTree<T>::AVLTree(const AVLTree<T> &other) {
 
 template <typename T> AVLTree<T>::AVLTree(AVLTree<T> &&other) {
     root = other.root;
-    std::vector<AVLNode<T> *> stack;
-        this->clear();
-
-        stack.push_back(other.root);
-        if (root != nullptr)
-            stack.push_back(root);
-
-        while (!stack.empty()) {
-            AVLNode<T> *node = stack.back();
-            stack.pop_back();
-
-            if (node->left != nullptr)
-                stack.push_back(node->left);
-
-            if (node->right != nullptr)
-                stack.push_back(node->right);
-
-            this->insert(node->value);
-        }
-    
-        other.root = nullptr;
+    other.root = nullptr;
 }
 
 template <typename T> AVLNode<T> *AVLTree<T>::find(T value) {
