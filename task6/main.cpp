@@ -25,6 +25,30 @@ TEST(SquareMatrix, moveConstructor) {
     ASSERT_TRUE((double)m2 == 3);
 }
 
+TEST(SquareMatrix, operatorSqBck) {
+
+    SquareMatrix m1({1, 2, 3});
+    ASSERT_TRUE(m1[0][0] == 1);
+    ASSERT_TRUE(m1[1][1] == 2);
+    ASSERT_TRUE(m1[2][2] == 3);
+}
+
+TEST(SquareMatrix, matrixOperators) {
+
+    SquareMatrix m1({1, 1, 1});
+    SquareMatrix m2({2, 2, 2});
+    ASSERT_TRUE((double)(m1 - m2) == -3);
+    ASSERT_TRUE((double)(m1 + m2) == 9);
+    ASSERT_TRUE((double)(m1 * m2) == 6);
+    ASSERT_FALSE(m1 == m2);
+    ASSERT_TRUE(m1 != m2);
+
+    m1 += m2;
+    ASSERT_TRUE((double)m1 == 9);
+    
+    m1 *= m2;
+    ASSERT_TRUE((double)m1 == 18);    
+}
 
 
 int main(int argc, char **argv) {
