@@ -150,6 +150,22 @@ TEST(AVLTreeTest, MoveConstructor) {
     ASSERT_EQ(tree1.root, nullptr);
 }
 
+TEST(AVLTreeTest, iterator) {
+
+  std::vector<int> values = {1,2,3,4,5,6,7,8,9};
+//   size_t size = 9;
+  AVLTree<int> determ_tree = AVLTree<int>(values);
+
+  std::vector<int> expected = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> actual;
+
+  for (auto node: determ_tree) {
+    actual.push_back(node.value);
+  }
+  ASSERT_THAT(actual, expected);
+
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleMock(&argc, argv);

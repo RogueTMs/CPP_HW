@@ -1,22 +1,22 @@
-#include "expression.cpp"
+// #include "expression.cpp"
 
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
+// #include <gmock/gmock.h>
+// #include <gtest/gtest.h>
 
-TEST(Expression, base) {
+// TEST(Expression, base) {
 
-    Expression* e = new Add(new Var("x"),
-        new Add(new Val(10), new Var("y")));
+//     Expression* e = new Add(new Var("x"),
+//         new Add(new Val(10), new Var("y")));
     
-    e->print();
-}
+//     e->print();
+// }
 
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    ::testing::InitGoogleMock(&argc, argv);
+// int main(int argc, char **argv) {
+//     ::testing::InitGoogleTest(&argc, argv);
+//     ::testing::InitGoogleMock(&argc, argv);
 
-    std::cout << "Hello!\n";
+//     std::cout << "Hello!\n";
 
-    return RUN_ALL_TESTS();
-}
+//     return RUN_ALL_TESTS();
+// }

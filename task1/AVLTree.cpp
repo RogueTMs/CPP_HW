@@ -1,6 +1,13 @@
 #include "AVLTree.h"
 #include <algorithm>
 
+template <typename T> AVLTree<T>::AVLTree(const std::vector<T>& values) {
+    root = nullptr;
+    for (const T& value : values) {
+        insert(value);
+    }
+}
+
 
 template <typename T> AVLTree<T> &AVLTree<T>::operator=(AVLTree other) {
     if (other.root != NULL && this != &other) {
@@ -50,7 +57,6 @@ template <typename T> AVLTree<T>::AVLTree(const AVLTree<T> &other) {
         }
     }
 }
-
 
 template <typename T> AVLTree<T>::AVLTree(AVLTree<T> &&other) {
     root = other.root;
@@ -235,6 +241,64 @@ template <class T> void AVLTree<T>::clear() {
     }
 
     root = nullptr;
+}
+
+template <typename T> AVLTree<T>::Iterator::Iterator(const Iterator &other) {
+    curr_ = other.curr_;
+    stack = other.stack;
+}
+
+template <typename T>
+typename AVLTree<T>::Iterator &
+AVLTree<T>::Iterator::operator=(const AVLTree<T>::Iterator &other) {
+    stack = other.stack;
+    curr_ = other.curr_;
+    return *this;
+}
+
+template <typename T>
+void AVLTree<T>::Iterator::push_node_trace(AVLNode<T> *node) {
+    if (node) {
+        stack.push_back(node);
+        push_node_trace(node->left);
+    }
+}
+
+template <typename T> bool AVLTree<T>::Iterator::has_next() {
+    return !stack.empty();
+}
+
+template <typename T> AVLNode<T> *AVLTree<T>::Iterator::next() {
+    if (!has_next())
+        return nullptr;
+    AVLNode<T> *curr = stack.back();
+    stack.pop_back();
+    if (curr->right)
+        push_node_trace(curr->right);
+    return curr;
+}
+
+// Iterator's operators
+
+template <typename T> AVLNode<T> &AVLTree<T>::Iterator::operator*() {
+    return *curr_;
+}
+
+template <typename T> AVLNode<T> *AVLTree<T>::Iterator::operator->() {
+    return curr_;
+}
+
+template <typename T>
+typename AVLTree<T>::Iterator& AVLTree<T>::Iterator::operator++() {
+    curr_ = next();
+    return *this;
+}
+
+template <typename T>
+typename AVLTree<T>::Iterator AVLTree<T>::Iterator::operator++(int) {
+    Iterator tmp(*this);
+    ++(*this);
+    return tmp;
 }
 
 template class AVLTree<int>;
