@@ -10,28 +10,28 @@ template <typename T> AVLTree<T>::AVLTree(const std::vector<T>& values) {
 
 
 template <typename T> AVLTree<T> &AVLTree<T>::operator=(AVLTree other) {
-    if (other.root != NULL && this != &other) {
-        this->clear();
-        std::vector<AVLNode<T> *> stack;
+    // if (other.root != NULL && this != &other) {
+    //     this->clear();
+    //     std::vector<AVLNode<T> *> stack;
 
-        stack.push_back(other.root);
-        if (root != nullptr)
-            stack.push_back(root);
+    //     stack.push_back(other.root);
+    //     if (root != nullptr)
+    //         stack.push_back(root);
 
-        while (!stack.empty()) {
-            AVLNode<T> *node = stack.back();
-            stack.pop_back();
+    //     while (!stack.empty()) {
+    //         AVLNode<T> *node = stack.back();
+    //         stack.pop_back();
 
-            if (node->left != nullptr)
-                stack.push_back(node->left);
+    //         if (node->left != nullptr)
+    //             stack.push_back(node->left);
 
-            if (node->right != nullptr)
-                stack.push_back(node->right);
+    //         if (node->right != nullptr)
+    //             stack.push_back(node->right);
 
-            this->insert(node->value);
-        }
-    }
-
+    //         this->insert(node->value);
+    //     }
+    // }
+    std::swap(root, other.root);
     return *this;
 }
 

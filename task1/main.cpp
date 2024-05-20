@@ -152,8 +152,7 @@ TEST(AVLTreeTest, MoveConstructor) {
 
 TEST(AVLTreeTest, iterator) {
 
-  std::vector<int> values = {1,2,3,4,5,6,7,8,9};
-//   size_t size = 9;
+  std::vector<int> values = {9, 8, 7, 6, 5, 4, 3, 2, 1};
   AVLTree<int> determ_tree = AVLTree<int>(values);
 
   std::vector<int> expected = {1, 2, 3, 4, 5, 6, 7, 8, 9};

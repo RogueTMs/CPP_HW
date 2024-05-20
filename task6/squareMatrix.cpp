@@ -1,6 +1,8 @@
 #include "squareMatrix.h"
 #include <bits/stdc++.h>
 
+SquareMatrix::operator double() const { return elements_sum_;};
+
 SquareMatrix::SquareMatrix(const double_vector &vector) : size_(vector.size()){
     elements_sum_ = std::accumulate(vector.begin(), vector.end(), 0);
     matrix_.resize(size_);
@@ -45,13 +47,7 @@ bool operator!=(const SquareMatrix& first, const SquareMatrix& second) {
     return !(first == second);
 }
 
-SquareMatrix& SquareMatrix::operator+=(const SquareMatrix &other){
-    if (this->size_ != other.get_size()){
-        throw std::runtime_error("Different shapes");
-    }
-    *this = *this + other;
-    return *this;
-}
+
 
 SquareMatrix operator+(const SquareMatrix& first, const SquareMatrix& second){
     return operation(first, second, [](double a, double b){return a + b;});
@@ -84,6 +80,14 @@ SquareMatrix operator*(const SquareMatrix& first, const SquareMatrix& second){
     return matmulImpl(first, second);
 }
 
+SquareMatrix& SquareMatrix::operator+=(const SquareMatrix &other){
+    if (this->size_ != other.get_size()){
+        throw std::runtime_error("Different shapes");
+    }
+    *this = *this + other;
+    return *this;
+}
+
 SquareMatrix operator+(const SquareMatrix& matrix, const double scalar){
     return matrix + double_vector(matrix.size_, scalar);
 }
@@ -113,16 +117,14 @@ SquareMatrix& SquareMatrix::operator-=(const double scalar){
 
 size_t SquareMatrix::get_size() const { return size_; }
 
-SquareMatrix::operator double() const { return elements_sum_;};
-
 SquareMatrix matmulImpl(const SquareMatrix &first, const SquareMatrix &second){
     size_t size = first.get_size();
     SquareMatrix result(size);
     for (size_t row = 0; row < size; ++row){
         for (size_t col = 0; col < size; ++col){
-            for (size_t inner; inner < size; ++inner){
-                double value = first[row * size][inner] * second[inner * size][col];
-                result.matrix_[row * size][col] += value;
+            for (size_t inner = 0; inner < size; ++inner){
+                double value = first[row][inner] * second[inner][col];
+                result.matrix_[row][col] += value;
                 result.elements_sum_ += value;
             }
         }

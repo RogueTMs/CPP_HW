@@ -3,11 +3,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-
 TEST(SquareMatrix, diagConstructor) {
 
     SquareMatrix m1({1.f, 3.f, -2.f});
-    ASSERT_TRUE((double)m1 == 2.f); 
+    ASSERT_TRUE((double)m1 == 2.f);
 }
 
 TEST(SquareMatrix, copyConstructor) {
@@ -45,11 +44,24 @@ TEST(SquareMatrix, matrixOperators) {
 
     m1 += m2;
     ASSERT_TRUE((double)m1 == 9);
-    
+
     m1 *= m2;
-    ASSERT_TRUE((double)m1 == 18);    
+    ASSERT_TRUE((double)m1 == 18);
 }
 
+TEST(SquareMatrix, matrixScalarOperators) {
+
+    SquareMatrix m1({1, 2, 3});
+    ASSERT_TRUE((double)(m1 - 1) == 3);
+    ASSERT_TRUE((double)(m1 + 1) == 9);
+    ASSERT_TRUE((double)(m1 * 2) == 12);
+
+    m1 += 1;
+    ASSERT_TRUE((double)m1 == 9);
+
+    m1 *= 2;
+    ASSERT_TRUE((double)m1 == 18);
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
