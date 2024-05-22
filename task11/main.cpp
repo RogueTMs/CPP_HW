@@ -1,15 +1,11 @@
-#include "CompPrimes.hpp"
+#include "CompilePrimes.hpp"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 TEST(Count, valTest) {
-    std::cout << prime<1>::value << std::endl; 
-    std::cout << prime<2>::value << std::endl; 
-    std::cout << prime<3>::value << std::endl; 
-    std::cout << prime<4>::value << std::endl;
-    std::cout << prime<5>::value << std::endl;
-    std::cout << prime<100>::value << std::endl;
+    EXPECT_EQ(prime<5>::value, 11);
+    EXPECT_EQ(prime<100>::value, 541);
 }
 
 int main(int argc, char **argv) {

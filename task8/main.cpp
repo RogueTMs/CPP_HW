@@ -1,4 +1,5 @@
 #include "IO.hpp"
+#include "bufferedIO.hpp"
 
 #include <gmock/gmock.h>
 #include <filesystem>
@@ -90,6 +91,7 @@ TEST(FileIO, WriteStringLen) {
     rw.write("abcd");
     ASSERT_EQ(rw.readString(3), "bcd");
 }
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

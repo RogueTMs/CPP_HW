@@ -1,12 +1,11 @@
 #include "IO.hpp"
+#include "bufferedIO.hpp"
 #include <charconv>
 
 bool stringIO::isOpen() { return _open; }
 bool stringIO::isEof() { return (cur_pos == source.max_size()); }
 
-void stringIO::goToEnd(){
-    cur_pos = source.length();
-}
+void stringIO::goToEnd() { cur_pos = source.length(); }
 
 void stringIO::close() {
     if (!_open) {
@@ -54,11 +53,11 @@ int stringIO::readInt() {
     std::string ret;
     size_t end_pos = cur_pos;
     char num = this->readChar();
-    if (!isdigit(num)){
+    if (!isdigit(num)) {
         std::cerr << "No int at this position" << std::endl;
         return 0;
     }
-    while (isdigit(num)){
+    while (isdigit(num)) {
         num = this->readChar();
     }
 
@@ -91,19 +90,36 @@ std::string stringIO::readString(const size_t &len) {
     return source.substr(cur_pos, len);
 }
 
-//write
-void stringIO::write(const char ch){
+// write
+void stringIO::write(const char ch) {
     source.insert(cur_pos, 1, ch);
     cur_pos += 1;
 }
 
-void stringIO::write(const int &num){
+void stringIO::write(const int &num) {
     std::string str = std::to_string(num);
     source.insert(cur_pos, str);
     cur_pos += str.length();
 }
 
-void stringIO::write(const std::string &str){
+void stringIO::write(const std::string &str) {
     source.insert(cur_pos, str);
     cur_pos += str.length();
+}
+
+bool StringRWBuffered::write_to_resource() {
+    int pos = BufferedWriter::index;
+    for (size_t i = 0; i < pos; i++) {
+        source += BufferedWriter::buffer[i];
+    }
+    return pos > 0;
+}
+
+bool StringRWBuffered::read_from_resource() {
+    char ch;
+    for (size_t i = 0; i < BufferedReader::buffer_size; i++) {
+        ch = read_char();
+        BufferedReader::buffer[i] = ch;
+    }
+    return true;
 }

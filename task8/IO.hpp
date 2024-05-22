@@ -37,10 +37,14 @@ class ReaderWriter : public Reader, public Writer {
 };
 
 class stringIO : public ReaderWriter {
+  protected:
     std::string source;
     bool _open;
 
   public:
+    stringIO() : source({}), _open(true) {
+        cur_pos = 0;
+    };
     stringIO(const std::string &_source) : source(_source), _open(true) {
         cur_pos = _source.length();
     };
@@ -65,6 +69,7 @@ class stringIO : public ReaderWriter {
 };
 
 class fileIO : public ReaderWriter {
+  protected:
     FILE *source;
     bool _open;
 
@@ -98,3 +103,5 @@ class fileIO : public ReaderWriter {
     void write(const int &num) override;
     void write(const std::string &str) override;
 };
+
+

@@ -2,24 +2,27 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <stdexcept>
+#include <string>
 
-template <typename T, size_t LIMIT> struct Restricted : MixIn<LIMIT> {
+template <typename T, size_t LIMIT> struct ExampleClass : MixIn<LIMIT> {
     T value;
-    Restricted(T val) : value(val) {}
+    ExampleClass(T val) : value(val) {}
 };
 
 TEST(ExpressionsInheritance, valTest) {
     const size_t limit = 4;
-    typedef Restricted<char, limit> restricted_t;
+    typedef ExampleClass<int, limit> example;
+    example a(0);
+    example b(1);
+    example c(2);
+    example d(3);
     try {
-        restricted_t a('1');
-        restricted_t b('a');
-        restricted_t c('1');
-        restricted_t d('a');
-        restricted_t f('1');
-
-    } catch (const MixInException &e) {
-        std::cout << e.what() << std::endl;
+        example e(4);
+    } catch (const std::runtime_error &e) {
+        EXPECT_EQ(e.what(), "Too many instances!");
+    } catch(...){
+        FAIL() << "Doesnt fail when trying to get instance out of limit";
     }
 }
 int main(int argc, char **argv) {
