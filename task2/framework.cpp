@@ -2,14 +2,15 @@
 #include <cmath>
 
 // Struct for Point
-struct Point {
-    double x;
-    double y;
+typedef std::pair<double, double> Point;
 
-    Point() : x(0.0), y(0.0) {}
-    
-    Point(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
-};
+inline double get_x(const Point& p){
+    return p.first;
+}
+
+inline double get_y(const Point& p){
+    return p.second;
+}
 
 // Struct for Line
 struct Line {
@@ -37,10 +38,10 @@ struct Line {
     
     // Function to find the intersection with another line
     Point findIntersection(Line otherLine) {
-        double x1 = start.x, y1 = start.y;
-        double x2 = end.x, y2 = end.y;
-        double x3 = otherLine.start.x, y3 = otherLine.start.y;
-        double x4 = otherLine.end.x, y4 = otherLine.end.y;
+        double x1 = get_x(start), y1 = get_y(start);
+        double x2 = get_x(end), y2 = get_y(end);
+        double x3 = get_x(otherLine.start), y3 = get_y(otherLine.start);
+        double x4 = get_x(otherLine.end), y4 = get_y(otherLine.end);
         
         double det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         
@@ -56,9 +57,9 @@ struct Line {
     
     // Function to find the perpendicular line at a given point
     Line findPerpendicularLine(Point p) {
-        double a = end.y - start.y;
-        double b = end.x - start.x;
-        double c = -a * p.x - b * p.y;
+        double a = get_y(end) - get_y(start);
+        double b = get_x(end) - get_x(start);
+        double c = -a * get_x(p) - b * get_y(p);
         
         return Line(a, b, c);
     }

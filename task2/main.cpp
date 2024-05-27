@@ -5,14 +5,14 @@
 
 TEST(PointTest, DefaultConstructor) {
     Point p;
-    EXPECT_DOUBLE_EQ(p.x, 0.0);
-    EXPECT_DOUBLE_EQ(p.y, 0.0);
+    EXPECT_DOUBLE_EQ(get_x(p), 0.0);
+    EXPECT_DOUBLE_EQ(get_y(p), 0.0);
 }
 
 TEST(PointTest, ConstructorWithCoordinates) {
     Point p(1.0, 2.0);
-    EXPECT_DOUBLE_EQ(p.x, 1.0);
-    EXPECT_DOUBLE_EQ(p.y, 2.0);
+    EXPECT_DOUBLE_EQ(get_x(p), 1.0);
+    EXPECT_DOUBLE_EQ(get_y(p), 2.0);
 }
 
 TEST(LineTest, ConstructorFromTwoPoints) {
@@ -20,19 +20,19 @@ TEST(LineTest, ConstructorFromTwoPoints) {
     Point p2(3.0, 4.0);
     Line line(p1, p2);
     
-    EXPECT_DOUBLE_EQ(line.start.x, 1.0);
-    EXPECT_DOUBLE_EQ(line.start.y, 2.0);
-    EXPECT_DOUBLE_EQ(line.end.x, 3.0);
-    EXPECT_DOUBLE_EQ(line.end.y, 4.0);
+    EXPECT_DOUBLE_EQ(get_x(line.start), 1.0);
+    EXPECT_DOUBLE_EQ(get_y(line.start), 2.0);
+    EXPECT_DOUBLE_EQ(get_x(line.end), 3.0);
+    EXPECT_DOUBLE_EQ(get_y(line.end), 4.0);
 }
 
 TEST(LineTest, ConstructorFromCoefficients) {
     Line line(2.0, -1.0, 3.0);
     
-    EXPECT_DOUBLE_EQ(line.start.x, 0.0);
-    EXPECT_DOUBLE_EQ(line.start.y, 3.0);
-    EXPECT_DOUBLE_EQ(line.end.x, 1.0);
-    EXPECT_DOUBLE_EQ(line.end.y, 5.0);
+    EXPECT_DOUBLE_EQ(get_x(line.start), 0.0);
+    EXPECT_DOUBLE_EQ(get_y(line.start), 3.0);
+    EXPECT_DOUBLE_EQ(get_x(line.end), 1.0);
+    EXPECT_DOUBLE_EQ(get_y(line.end), 5.0);
 }
 
 TEST(LineTest, FailFindIntersection) {
@@ -65,8 +65,8 @@ TEST(LineTest, PositiveFindIntersection) {
     
     Point intersection = line1.findIntersection(line2);
 
-    EXPECT_DOUBLE_EQ(intersection.x, -1.0);
-    EXPECT_DOUBLE_EQ(intersection.y, -2.0);
+    EXPECT_DOUBLE_EQ(get_x(intersection), -1.0);
+    EXPECT_DOUBLE_EQ(get_y(intersection), -2.0);
 }
 
 TEST(LineTest, FindPerpendicularLine) {
@@ -77,10 +77,10 @@ TEST(LineTest, FindPerpendicularLine) {
     Point point(5.0, 6.0);
     Line perpendicularLine = line.findPerpendicularLine(point);
     
-    EXPECT_DOUBLE_EQ(perpendicularLine.start.x, 0.0);
-    EXPECT_DOUBLE_EQ(perpendicularLine.start.y, 11.0);
-    EXPECT_DOUBLE_EQ(perpendicularLine.end.x, 1.0);
-    EXPECT_DOUBLE_EQ(perpendicularLine.end.y, 10.0);
+    EXPECT_DOUBLE_EQ(get_x(perpendicularLine.start), 0.0);
+    EXPECT_DOUBLE_EQ(get_y(perpendicularLine.start), 11.0);
+    EXPECT_DOUBLE_EQ(get_x(perpendicularLine.end), 1.0);
+    EXPECT_DOUBLE_EQ(get_y(perpendicularLine.end), 10.0);
 }
 
 int main(int argc, char **argv) {

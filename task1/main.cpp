@@ -162,7 +162,6 @@ TEST(AVLTreeTest, iterator) {
     actual.push_back(node.value);
   }
   ASSERT_THAT(actual, expected);
-
 }
 
 int main(int argc, char **argv) {

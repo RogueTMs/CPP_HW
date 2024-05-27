@@ -33,40 +33,40 @@ TEST(Expression, Exponent_diff) {
 
 TEST(Expression, Mult_diff) {
     Expression *e = new Mult(new Var("x"), new Val(5));
-    
+
     Expression *edx = e->diff("x");
     ASSERT_EQ(edx->get_str(), "(1)*(5)+(x)*(0)");
-    
+
     delete e;
     delete edx;
 }
 
 TEST(Expression, Sub_diff) {
     Expression *e = new Sub(new Var("x"), new Val(5));
-    
+
     Expression *edx = e->diff("x");
     ASSERT_EQ(edx->get_str(), "1-0");
-    
+
     delete e;
     delete edx;
 }
 
 TEST(Expression, Add_diff) {
     Expression *e = new Add(new Var("x"), new Val(5));
-    
+
     Expression *edx = e->diff("x");
     ASSERT_EQ(edx->get_str(), "1+0");
-    
+
     delete e;
     delete edx;
 }
 
 TEST(Expression, Div_diff) {
-    Expression *e = new Div(new Var("x"), new Val(5));
-    
+    Expression *e = new Div(new Var("x"), new Val(5)); // x/5
+
     Expression *edx = e->diff("x");
-    ASSERT_EQ(edx->get_str(), "((1)*(5)-(x)*(0))/((5)*(5))");
-    
+    ASSERT_EQ(edx->get_str(), "((1)*(5)-(x)*(0))/((5)*(5))"); // (1*5-x*0)/(5*5)
+
     delete e;
     delete edx;
 }

@@ -1,5 +1,4 @@
 #include <iostream>
-// #include <format>
 #include <memory>
 #include <string>
 
@@ -59,10 +58,11 @@ class Binary : public Expression {
     Binary(Expression *left, Expression *right, char operation)
         : left(left), right(right), operation(operation) {}
 
-    ~Binary() {
-        left.reset();
-        right.reset();
-    }
+    // ~Binary() {
+    //     std::cout << "BINARY destructor called!" << std::endl;
+    //     left.reset();
+    //     right.reset();
+    // }
 
     std::string get_str() override {
         // return std::format("{}", " {} ", "{}", left->get_str(), operation,
@@ -79,7 +79,7 @@ class Unary : public Expression {
   public:
     Unary(std::string symb, Expression *exp) : symb(symb), exp(exp) {}
 
-    ~Unary() { exp.reset(); }
+    // ~Unary() { exp.reset(); }
 
     std::string get_str() override { return symb + exp->get_str(); }
 };

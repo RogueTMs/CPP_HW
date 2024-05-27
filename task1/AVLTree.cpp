@@ -1,60 +1,37 @@
 #include "AVLTree.h"
 #include <algorithm>
 
-template <typename T> AVLTree<T>::AVLTree(const std::vector<T>& values) {
+template <typename T> AVLTree<T>::AVLTree(const std::vector<T> &values) {
     root = nullptr;
-    for (const T& value : values) {
-        insert(value);
+    for (T val : values) {
+        insert(val);
     }
 }
 
-
 template <typename T> AVLTree<T> &AVLTree<T>::operator=(AVLTree other) {
-    // if (other.root != NULL && this != &other) {
-    //     this->clear();
-    //     std::vector<AVLNode<T> *> stack;
-
-    //     stack.push_back(other.root);
-    //     if (root != nullptr)
-    //         stack.push_back(root);
-
-    //     while (!stack.empty()) {
-    //         AVLNode<T> *node = stack.back();
-    //         stack.pop_back();
-
-    //         if (node->left != nullptr)
-    //             stack.push_back(node->left);
-
-    //         if (node->right != nullptr)
-    //             stack.push_back(node->right);
-
-    //         this->insert(node->value);
-    //     }
-    // }
     std::swap(root, other.root);
     return *this;
 }
 
 template <typename T> AVLTree<T>::AVLTree(const AVLTree<T> &other) {
-    if (other.root != NULL && this != &other) {
-        root = new AVLNode<T>(other.root->value);
-        std::vector<AVLNode<T> *> stack;
-        this->clear();
+    root = nullptr;
+    std::vector<AVLNode<T> *> stack;
 
+    if (other.root != nullptr) {
         stack.push_back(other.root);
+    }
 
-        while (!stack.empty()) {
-            AVLNode<T> *node = stack.back();
-            stack.pop_back();
+    while (!stack.empty()) {
+        AVLNode<T> *node = stack.back();
+        stack.pop_back();
 
-            if (node->left != nullptr)
-                stack.push_back(node->left);
+        if (node->left != nullptr)
+            stack.push_back(node->left);
 
-            if (node->right != nullptr)
-                stack.push_back(node->right);
+        if (node->right != nullptr)
+            stack.push_back(node->right);
 
-            this->insert(node->value);
-        }
+        this->insert(node->value);
     }
 }
 
@@ -107,16 +84,17 @@ template <typename T> AVLNode<T> *AVLTree<T>::getMin(AVLNode<T> *node) {
 }
 
 template <typename T>
-AVLNode<T> *AVLTree<T>::insertImpl(AVLNode<T> *node, T value) {
+AVLNode<T> *AVLTree<T>::insertImpl(AVLNode<T> *node, T value,
+                                   AVLNode<T> *parent_node) {
     if (!node) {
-        node = new AVLNode<T>(value);
+        node = new AVLNode<T>(value, parent_node);
         return node;
     }
 
     if (value < node->value)
-        node->left = insertImpl(node->left, value);
+        node->left = insertImpl(node->left, value, node);
     else if (value > node->value)
-        node->right = insertImpl(node->right, value);
+        node->right = insertImpl(node->right, value, node);
     else {
         std::cout << "Equal keys are not allowed in BST\n";
         return nullptr;
@@ -124,22 +102,6 @@ AVLNode<T> *AVLTree<T>::insertImpl(AVLNode<T> *node, T value) {
     node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
 
     return balanceTree(node);
-}
-
-template <typename T>
-AVLNode<T> *AVLTree<T>::findImpl(AVLNode<T> *node, T value) {
-    if (!node) {
-        std::cout << "No such node\n";
-        return node;
-    }
-
-    if (node->value == value)
-        return node;
-
-    if (node->value > value)
-        return findImpl(node->left, value);
-    else
-        return findImpl(node->right, value);
 }
 
 template <typename T>
@@ -181,10 +143,32 @@ AVLNode<T> *AVLTree<T>::removeImpl(AVLNode<T> *node, T value) {
     return balanceTree(node);
 }
 
+template <typename T>
+AVLNode<T> *AVLTree<T>::findImpl(AVLNode<T> *node, T value) {
+    if (!node) {
+        return nullptr;
+    }
+
+    if (value < node->value) {
+        return findImpl(node->left, value);
+    } else if (value > node->value) {
+        return findImpl(node->right, value);
+    } else {
+        return node;
+    }
+}
+
 template <typename T> AVLNode<T> *AVLTree<T>::right_rotation(AVLNode<T> *node) {
     AVLNode<T> *newNode = node->left;
     node->left = newNode->right;
+    if (newNode->right != nullptr) {
+        newNode->right->parent = root;
+    }
+
     newNode->right = node;
+    newNode->parent = node->parent;
+    node->parent = newNode;
+
     node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
     newNode->height =
         1 + std::max(getHeight(newNode->left), getHeight(newNode->right));
@@ -194,7 +178,14 @@ template <typename T> AVLNode<T> *AVLTree<T>::right_rotation(AVLNode<T> *node) {
 template <typename T> AVLNode<T> *AVLTree<T>::left_rotation(AVLNode<T> *node) {
     AVLNode<T> *newNode = node->right;
     node->right = newNode->left;
+    if (newNode->left != nullptr) {
+        newNode->left->parent = root;
+    }
+
     newNode->left = node;
+    newNode->parent = node->parent;
+    node->parent = newNode;
+
     node->height = 1 + std::max(getHeight(node->left), getHeight(node->right));
     newNode->height =
         1 + std::max(getHeight(newNode->left), getHeight(newNode->right));
@@ -243,62 +234,36 @@ template <class T> void AVLTree<T>::clear() {
     root = nullptr;
 }
 
-template <typename T> AVLTree<T>::Iterator::Iterator(const Iterator &other) {
-    curr_ = other.curr_;
-    stack = other.stack;
-}
-
 template <typename T>
-typename AVLTree<T>::Iterator &
-AVLTree<T>::Iterator::operator=(const AVLTree<T>::Iterator &other) {
-    stack = other.stack;
-    curr_ = other.curr_;
-    return *this;
-}
-
-template <typename T>
-void AVLTree<T>::Iterator::push_node_trace(AVLNode<T> *node) {
-    if (node) {
-        stack.push_back(node);
-        push_node_trace(node->left);
+typename AVLTree<T>::Iterator &AVLTree<T>::Iterator::operator++() {
+    AVLNode<T> *p;
+    if (_cur->right != nullptr) {
+        _cur = _cur->right;
+        while (_cur->left) _cur = _cur->left;
+    } else {
+        p = _cur->parent;
+        while (p && _cur == p->right) {
+            _cur = p;
+            p = p->parent;
+        }
+        _cur = p;
     }
-}
-
-template <typename T> bool AVLTree<T>::Iterator::has_next() {
-    return !stack.empty();
-}
-
-template <typename T> AVLNode<T> *AVLTree<T>::Iterator::next() {
-    if (!has_next())
-        return nullptr;
-    AVLNode<T> *curr = stack.back();
-    stack.pop_back();
-    if (curr->right)
-        push_node_trace(curr->right);
-    return curr;
-}
-
-// Iterator's operators
-
-template <typename T> AVLNode<T> &AVLTree<T>::Iterator::operator*() {
-    return *curr_;
-}
-
-template <typename T> AVLNode<T> *AVLTree<T>::Iterator::operator->() {
-    return curr_;
-}
-
-template <typename T>
-typename AVLTree<T>::Iterator& AVLTree<T>::Iterator::operator++() {
-    curr_ = next();
     return *this;
 }
 
 template <typename T>
 typename AVLTree<T>::Iterator AVLTree<T>::Iterator::operator++(int) {
-    Iterator tmp(*this);
-    ++(*this);
-    return tmp;
+    auto it = *this;
+    ++*this;
+    return it;
+}
+
+template <typename T> AVLNode<T> *AVLTree<T>::Iterator::operator->() {
+    return _cur;
+}
+
+template <typename T> AVLNode<T> &AVLTree<T>::Iterator::operator*() {
+    return *_cur;
 }
 
 template class AVLTree<int>;

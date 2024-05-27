@@ -1,32 +1,46 @@
+#include <cmath>
 #include <functional>
 #include <iostream>
 #include <optional>
 #include <sstream>
 #include <stdio.h>
 
-typedef std::vector<double> double_vector;
-
 class SquareMatrix {
-    size_t size_ = 0;
+    size_t shape = 0;
     double elements_sum_ = 0;
-    std::vector<double_vector> matrix_;
+    double **matrix_;
 
   public:
-    SquareMatrix(const double_vector &vector);
-    SquareMatrix(const size_t &size) : size_(size), matrix_(size, double_vector(size, 0.0)) {}
-    SquareMatrix(const SquareMatrix &other)
-        : matrix_(other.matrix_), size_(other.size_),
-          elements_sum_(other.elements_sum_) {}
-
-    SquareMatrix(SquareMatrix &&other)
-        : matrix_(std::move(other.matrix_)), size_(other.size_),
-          elements_sum_(other.elements_sum_) {
-        other.elements_sum_ = 0;
-        other.size_ = 0;
+    SquareMatrix(const std::vector<double> &vector);
+    SquareMatrix(double **matrix, size_t shape_);
+    SquareMatrix(const size_t shape_) : shape(shape_) {
+        matrix_ = new double *[shape];
+        for (size_t i = 0; i < shape; i++) {
+            matrix_[i] = new double[shape];
+            for (size_t j = 0; j < shape; j++) {
+                matrix_[i][j] = 0;
+            }
+        }
+    }
+    SquareMatrix(const SquareMatrix &other) : SquareMatrix(other.shape) {
+        for (size_t i = 0; i < shape; i++) {
+            for (size_t j = 0; j < shape; j++) {
+                matrix_[i][j] = other.matrix_[i][j];
+                elements_sum_ += other.matrix_[i][j];
+            }
+        }
     }
 
-    double_vector &operator[](size_t index);
-    const double_vector &operator[](size_t index) const;
+    SquareMatrix(SquareMatrix &&other)
+        : matrix_(std::move(other.matrix_)), shape(other.shape),
+          elements_sum_(other.elements_sum_) {
+        other.matrix_ = nullptr;
+        other.elements_sum_ = 0;
+        other.shape = 0;
+    }
+
+    double *operator[](size_t index);
+    const double *operator[](size_t index) const;
 
     explicit operator double() const;
 
@@ -52,18 +66,32 @@ class SquareMatrix {
                                   const double scalar);
     friend SquareMatrix operator*(const SquareMatrix &matrix,
                                   const double scalar);
+    friend SquareMatrix operator+(const double scalar,
+                                  const SquareMatrix &matrix);
+    friend SquareMatrix operator-(const double scalar,
+                                  const SquareMatrix &matrix);
+    friend SquareMatrix operator*(const double scalar,
+                                  const SquareMatrix &matrix);
+
     SquareMatrix &operator+=(const double scalar);
     SquareMatrix &operator-=(const double scalar);
     SquareMatrix &operator*=(const double scalar);
 
-    ~SquareMatrix() = default;
+    ~SquareMatrix() {
+        if (matrix_) {
+            for (size_t i = 0; i < shape; i++) {
+                delete[] matrix_[i];
+            }
+        }
+        delete[] matrix_;
+    }
 
-    size_t get_size() const;
+    size_t get_shape() const;
 
   private:
     friend SquareMatrix matmulImpl(const SquareMatrix &first,
-                                    const SquareMatrix &second);
+                                   const SquareMatrix &second);
     friend SquareMatrix operation(const SquareMatrix &first,
-                              const SquareMatrix &second,
-                              std::function<double(double, double)> func);
+                                  const SquareMatrix &second,
+                                  std::function<double(double, double)> func);
 };

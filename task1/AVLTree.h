@@ -5,14 +5,16 @@
 template <typename U> struct AVLNode {
     AVLNode *left;
     AVLNode *right;
+    AVLNode *parent;
 
     U value;
     int height;
 
-    AVLNode(U _value) : value(_value) {
+    AVLNode(U _value, AVLNode *parent_node = nullptr) : value(_value) {
         height = 1;
-        left = NULL;
-        right = NULL;
+        left = nullptr;
+        right = nullptr;
+        parent = parent_node;
     }
 };
 
@@ -36,44 +38,33 @@ template <typename T> class AVLTree {
     AVLNode<T> *find(T value);
 
     class Iterator {
-        AVLNode<T> *curr_;
-        std::vector<AVLNode<T> *> stack;
+        AVLNode<T> *_cur;
 
       public:
-        Iterator(AVLNode<T> *ptr) {
-            push_node_trace(ptr);
-            curr_ = has_next() ? next() : nullptr;
-        }
-        Iterator(const Iterator &other);
-        Iterator &operator=(const Iterator &other);
-        ~Iterator() {}
+        Iterator(AVLNode<T> *node) : _cur(node) {}
 
-        // Iterator's operators
-        AVLNode<T> &operator*();
-        AVLNode<T> *operator->();
         Iterator &operator++();
         Iterator operator++(int);
-        friend bool operator==(const Iterator &first, const Iterator &second) {
-            return first.curr_ == second.curr_;
-        }
-        friend bool operator!=(const typename AVLTree<T>::Iterator &first,
-                               const AVLTree<T>::Iterator &second) {
-            return !(first == second);
+        AVLNode<T> *operator->();
+        AVLNode<T> &operator*();
+
+        bool operator==(const Iterator &other) const {
+            return _cur == other._cur;
         }
 
-      private:
-        void push_node_trace(AVLNode<T> *node);
-        bool has_next();
-        AVLNode<T> *next();
+        bool operator!=(const Iterator &other) const {
+            return !(*this == other);
+        }
     };
 
-    Iterator begin() { return Iterator(root); }
+    Iterator begin() { return Iterator(getMin(root)); }
     Iterator end() { return Iterator(nullptr); }
 
   private:
     int getHeight(AVLNode<T> *node);
     int getBalance(AVLNode<T> *node);
-    AVLNode<T> *insertImpl(AVLNode<T> *node, T value);
+    AVLNode<T> *insertImpl(AVLNode<T> *node, T value,
+                           AVLNode<T> *parent_node = nullptr);
     AVLNode<T> *removeImpl(AVLNode<T> *node, T value);
     AVLNode<T> *findImpl(AVLNode<T> *node, T value);
 
@@ -81,6 +72,6 @@ template <typename T> class AVLTree {
     AVLNode<T> *right_rotation(AVLNode<T> *node);
     AVLNode<T> *balanceTree(AVLNode<T> *node);
 
-    void swapData(AVLTree<T> &other, AVLNode<T> *root = nullptr);
+    // void swapData(AVLTree<T> &other, AVLNode<T> *root = nullptr);
     void clear();
 };

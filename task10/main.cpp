@@ -25,6 +25,15 @@ TEST(ExpressionsInheritance, valTest) {
         FAIL() << "Doesnt fail when trying to get instance out of limit";
     }
 }
+
+TEST(ExpressionsInheritance, copyConstructor) {
+    const size_t limit = 4;
+    typedef ExampleClass<int, limit> example;
+    example original(1);
+    example copied(original);
+    EXPECT_EQ(original.value, copied.value);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleMock(&argc, argv);
